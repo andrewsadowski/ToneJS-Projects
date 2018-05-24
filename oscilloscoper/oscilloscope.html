@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="styles.css">
+  <script src="assets/js/p5.min.js"></script>
+  <script src="assets/js/p5.sound.js"></script>
+  <script src="assets/js/NexusUI.js"></script>
+  <script src="assets/js/Tone.min.js"></script>
+  <title>Oscilloscoper</title>
+</head>
+
+<body>
+  <div id="oscilloscope"></div>
+  <canvas id="defaultCanvas0" class="p5Canvas" style="width: 720px; height: 256px;" width="720" height="256"></canvas>
+
+  <script>
+    var osc, fft;
+
+    function setup() {
+      createCanvas(720, 256);
+
+      osc = new p5.TriOsc(); // set frequency and type
+      osc.amp(.5);
+
+      fft = new p5.FFT();
+      osc.start();
+    }
+
+    function draw() {
+      background(255);
+
+      var waveform = fft.waveform();  // analyze the waveform
+      beginShape();
+      strokeWeight(5);
+      for (var i = 0; i < waveform.length; i++) {
+        var x = map(i, 0, waveform.length, 0, width);
+        var y = map(waveform[i], -1, 1, height, 0);
+        vertex(x, y);
+      }
+      endShape();
+
+      // change oscillator frequency based on mouseX
+      var freq = map(mouseX, 0, width, 40, 880);
+      osc.freq(freq);
+
+      var amp = map(mouseY, 0, height, 1, .01);
+      osc.amp(amp);
+    }
+
+  </script>
+</body>
+
+</html>
